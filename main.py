@@ -1,6 +1,6 @@
 import database_ui
-import log_interface
-from datetime import date
 
-today = date.today()
-print(f"today is: {today}")
+
+
+if __name__ == "__main__":
+    start = database_ui.DatabaseUi()

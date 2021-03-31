@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from log_interface import Log
-
+import log_interface
 
 
 class DatabaseUi:
@@ -12,10 +11,10 @@ class DatabaseUi:
         self.screen_width = self.window.winfo_screenwidth()
         self.screen_heigth = self.window.winfo_screenheight()
         self.width = 580
-        self.heigth = 370
+        self.heigth = 390
         self.x_coor = int((self.screen_width / 2) - (self.width / 2))
         self.y_coor = int((self.screen_heigth / 2) - (self.heigth / 2))
-        self.window.config(padx=20, pady=20)
+        self.window.config(padx=20, pady=5)
         self.window.geometry(f"{self.width}x{self.heigth}+{self.x_coor}+{self.y_coor}")
         self.window.resizable(0, 0)
 
@@ -30,10 +29,11 @@ class DatabaseUi:
         self.style.map("Treeview",
                        background=[("selected", "#347083")])
         self.treeview_frame = Frame()
-        self.treeview_frame.grid(row=0, column=0, padx=10, sticky="ne")
+        self.treeview_frame.grid(row=1, column=0, padx=10, sticky="ne")
         self.treeview_scroll = Scrollbar(self.treeview_frame)
         self.treeview_scroll.pack(side=RIGHT, fill=Y)
-        self.tree_view = ttk.Treeview(self.treeview_frame, yscrollcommand=self.treeview_scroll.set, selectmode="extended")
+        self.tree_view = ttk.Treeview(self.treeview_frame, yscrollcommand=self.treeview_scroll.set,
+                                      selectmode="extended")
         self.tree_view.pack()
         self.treeview_scroll.config(command=self.tree_view.yview)
         self.tree_view["columns"] = ("First Name", "Last Name", "Date", "Title")
@@ -44,17 +44,15 @@ class DatabaseUi:
         self.tree_view.column("Date", anchor=CENTER, width=140)
         self.tree_view.column("Title", anchor=CENTER, width=100)
 
-
         self.tree_view.heading("#0", text="", anchor=W)
         self.tree_view.heading("First Name", text="First Name", anchor=W)
         self.tree_view.heading("Last Name", text="Last Name", anchor=W)
         self.tree_view.heading("Date", text="Date", anchor=CENTER)
         self.tree_view.heading("Title", text="Title", anchor=CENTER)
-
         #creating search option
 
         self.search_frame = LabelFrame(text="Search", font=("Calibri", 11))
-        self.search_frame.grid(row=1, column=0, pady=20)
+        self.search_frame.grid(row=2, column=0, pady=20)
 
         self.date_label = Label(self.search_frame, text="Date", font=("Calibri", 11))
         self.date_label.grid(row=0, column=0, pady=5)
@@ -71,14 +69,15 @@ class DatabaseUi:
         self.title_search_btn = Button(self.search_frame, text="Search by Title", font=("Calibri", 11))
         self.title_search_btn.grid(row=1, column=2, padx=10)
 
-
-
+        #creating a back to the journal button
+        self.journal_btn = Button(text="Go to Journal", width=10, command=self.go_to_journal)
+        self.journal_btn.grid(row=0, column=0, padx=7, pady=5, sticky=W)
 
         self.window.mainloop()
 
+    def go_to_journal(self):
+        self.window.destroy()
+        log_interface.Log()
 
 
-
-
-
-s = DatabaseUi()
+#s = DatabaseUi()

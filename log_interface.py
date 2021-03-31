@@ -1,6 +1,9 @@
 from tkinter import *
-from datetime import date, datetime
-
+from datetime import date
+import database_ui
+import sqlite3
+from os import path
+from tkinter import messagebox
 
 
 class Log:
@@ -11,7 +14,7 @@ class Log:
         self.screen_width = self.window.winfo_screenwidth()
         self.screen_heigth = self.window.winfo_screenheight()
         self.width = 900
-        self.heigth = 650
+        self.heigth = 580
         self.x_coor = int((self.screen_width / 2) - (self.width / 2))
         self.y_coor = int((self.screen_heigth / 2) - (self.heigth / 2))
         self.window.geometry(f"{self.width}x{self.heigth}+{self.x_coor}+{self.y_coor}")
@@ -31,7 +34,7 @@ class Log:
 
         self.submenu = Menu(self.menu, tearoff=False)
         self.menu.add_cascade(label="File", menu=self.submenu)
-        self.submenu.add_command(label="New File")
+        self.submenu.add_command(label="New File", command=self.call_database)
 
         # adding edit dropdown menu
         self.edit_menu = Menu(self.menu, tearoff=False)
@@ -61,15 +64,45 @@ class Log:
         self.title_entry = Entry(self.save_frame, font=("Calibri", 11))
         self.title_entry.grid(row=1, column=3, padx=10, pady=5)
 
-        self.save_btn = Button(self.save_frame, text="Save", width=15)
+        self.save_btn = Button(self.save_frame, text="Save", width=15, command=self.saving_to_database)
         self.save_btn.grid(row=3, column=1, columnspan=2, pady=5, sticky=E)
-
-
-
 
         self.window.mainloop()
 
-ll = Log()
+    def call_database(self):
+        self.window.destroy()
+        database_ui.DatabaseUi()
+
+    #creating or saving information to the database
+    def saving_to_database(self):
+        if len(self.f_name_entry.get()) ==0 or len(self.l_name_entry.get()) == 0 or \
+                len(self.title_entry.get()) == 0:
+            messagebox.showinfo(title="Oops", message="Please make sure you haven't left any fields empty.")
+        else:
+            if path.exists("journal.db"):
+                print("something")
+                self.db_connection = sqlite3.connect("journal.db")
+                self.db_cursor = self.db_connection.cursor()
+
+            else:
+                print("creating the db")
+                self.db_connection = sqlite3.connect("journal.db")
+                self.db_cursor = self.db_connection.cursor()
+                self.db_cursor.execute("""CREATE TABLE journal(
+                                                  first_name text,
+                                                  last_name text,
+                                                  date integer,
+                                                  title text)""")
+                self.db_connection.commit()
+                self.db_connection.close()
+                self.saving_to_database()
 
 
 
+
+
+
+
+
+
+#ll = Log()
