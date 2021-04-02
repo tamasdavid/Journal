@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import log_interface
+import sqlite3
 
 
 class DatabaseUi:
@@ -49,8 +50,12 @@ class DatabaseUi:
         self.tree_view.heading("Last Name", text="Last Name", anchor=W)
         self.tree_view.heading("Date", text="Date", anchor=CENTER)
         self.tree_view.heading("Title", text="Title", anchor=CENTER)
-        #creating search option
 
+        #creating the stiped row tags
+        self.tree_view.tag_configure("orddrow", background="white")
+        self.tree_view.tag_configure("evenrow", background="lightblue")
+
+        #creating search option
         self.search_frame = LabelFrame(text="Search", font=("Calibri", 11))
         self.search_frame.grid(row=2, column=0, pady=20)
 
@@ -73,11 +78,37 @@ class DatabaseUi:
         self.journal_btn = Button(text="Go to Journal", width=10, command=self.go_to_journal)
         self.journal_btn.grid(row=0, column=0, padx=7, pady=5, sticky=W)
 
+        self.add_data_to_treeview()
         self.window.mainloop()
 
     def go_to_journal(self):
         self.window.destroy()
         log_interface.Log()
 
+    def add_data_to_treeview(self):
+        self.db_connection = sqlite3.connect("journal.db")
+        self.db_cursor = self.db_connection.cursor()
+
+        self.db_cursor.execute("SELECT *, oid FROM journal")
+        self.records = self.db_cursor.fetchall()
+        self.count = 0
+        self.content = []
+
+        for self.record in self.records:
+            self.content.append(self.record)
+
+        for rec in self.content:
+            if self.count % 2 == 0:
+                self.tree_view.insert(parent="", index="end", iid=self.count, text="",
+                                      values=(self.content[self.count][0], self.content[self.count][1],
+                                              self.content[self.count][2], self.content[self.count][3]),
+                                      tags=("evenrow",))
+
+            else:
+                self.tree_view.insert(parent="", index="end", iid=self.count, text="",
+                                      values=(self.content[self.count][0], self.content[self.count][1],
+                                              self.content[self.count][2], self.content[self.count][3]),
+                                      tags=("oddrow",))
+            self.count +=1
 
 #s = DatabaseUi()
