@@ -1,3 +1,4 @@
 # Journal
 Simple journaling app
-I just started it and created  a simple ui i will add the functuality and the database soon
+This is my first project
+Sort of finished for now added the functuality i wanted but i did not find a way to reopen the content in the journal window yet 
